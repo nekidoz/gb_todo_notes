@@ -13,10 +13,15 @@
     pip install markdown
     pip install django-filter
 
-- Политика CORS
+- Политика CORS (безопасность)
 
 
     pip install django-cors-headers
+
+- DRF Camel Case (camel case в сторону фронтэнда) (https://github.com/vbabiy/djangorestframework-camel-case)
+
+
+    pip install djangorestframework-camel-case
 
 ## Клиент на JavaScript/React
 ### Установка node.js 
