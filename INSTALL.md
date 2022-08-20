@@ -35,8 +35,16 @@
     npx create-react-app frontend
 ### Установка библиотек
 В папке приложения frontend:
+- http-запросы:
+
 
     npm install axios
+
+- bootstrap:
+
+
+    npm install bootstrap@5.2.0
+
 ## Клонирование проекта
 Клонируйте проект из Git 
 

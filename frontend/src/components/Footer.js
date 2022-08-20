@@ -1,10 +1,14 @@
 import React from 'react'
 
-const Footer = ({items}) => {
+// Можно было объявить и экспортировать функцию так:
+// export default function Footer()
+const Footer = () => {
     return (
-        <p>
-            This is a footer.
-        </p>
+        <footer className="footer mt-auto py-3">
+            <div className="container">
+                <span className="text-muted"> This is a footer. </span>
+            </div>
+        </footer>
     )
 }
 
