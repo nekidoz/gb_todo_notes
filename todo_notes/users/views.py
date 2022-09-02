@@ -1,11 +1,12 @@
 from django.shortcuts import render
 
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import viewsets, mixins
 from .models import User
 from .serializers import UserModelSerializer
 
 
-# Create your views here.
-class UserModelViewSet(ModelViewSet):
+# Можно только смотреть список и детали объекта и обновлять его, но не создавать или удалять объекты
+class UserModelViewSet(viewsets.GenericViewSet,
+                       mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
     queryset = User.objects.all()
     serializer_class = UserModelSerializer

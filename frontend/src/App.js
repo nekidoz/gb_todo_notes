@@ -31,7 +31,10 @@ class App extends React.Component {
     componentDidMount() {
         axios.get(get_absolute_url('users/'))
             .then(response => {
-                this.setState({'users': response.data})
+                // The following line does not work with pagination
+                //this.setState({'users': response.data})
+                // Account for pagination
+                this.setState({'users': response.data.results})
             }).catch(error => console.log(error))
     }
 

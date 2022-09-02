@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     # CORS
     'corsheaders',
+    # Библиотека django-filter
+    'django_filters',
     # ToDo_notes apps
     'users',
     'todo',
@@ -78,6 +80,11 @@ REST_FRAMEWORK = {
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
         # Any other parsers
     ),
+    # Библиотека django-filter
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    # Pagination - класс и размер страницы по умолчанию для всех view, где это явно не указано
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100,
 }
 
 ROOT_URLCONF = 'todo_notes.urls'
