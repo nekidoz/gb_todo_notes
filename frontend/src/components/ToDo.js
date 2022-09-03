@@ -7,7 +7,7 @@ const ToDoItem = ({todo}) => {
             <td>{todo.text}</td>
             <td>{todo.dateCreated}</td>
             <td>{todo.dateUpdated}</td>
-            <td>{todo.isActive}</td>
+            <td>{todo.isActive ? 'Yes' : 'No'}</td>
             <td>{todo.project}</td>
             <td>{todo.creatorUser}</td>
         </tr>

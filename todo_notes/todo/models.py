@@ -5,7 +5,7 @@ from users.models import User
 
 # Create your models here.
 class Project(models.Model):
-    name = models.TextField(blank=False, null=False, max_length=128)
+    name = models.CharField(blank=False, null=False, max_length=128)
     repository_url = models.URLField(blank=True, null=True, max_length=1024)
     member_users = models.ManyToManyField(User)
 
