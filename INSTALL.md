@@ -45,6 +45,11 @@
 
     npm install bootstrap@5.2.0
 
+- client-side routing
+
+
+    npm install react-router-dom@5.2.0
+
 ## Клонирование проекта
 Клонируйте проект из Git 
 
