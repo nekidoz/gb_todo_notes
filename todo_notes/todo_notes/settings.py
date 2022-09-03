@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'corsheaders',
     # Библиотека django-filter
     'django_filters',
+    # Required for rest_framework.authentication.TokenAuthentication
+    'rest_framework.authtoken',
     # ToDo_notes apps
     'users',
     'todo',
@@ -86,6 +88,18 @@ REST_FRAMEWORK = {
     # Pagination - класс и размер страницы по умолчанию для всех view, где это явно не указано
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100,
+    # Permissions - default if not specified for individual views
+    'DEFAULT_PERMISSION_CLASSES': [
+        # use Django model permissions
+        'rest_framework.permissions.DjangoModelPermissions',
+    ],
+    # Authentication - available authentication methods
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',  # can be used right away
+        'rest_framework.authentication.TokenAuthentication',  # requires rest_framework.authtoken app
+        'rest_framework.authentication.SessionAuthentication',  # нужен для работы web-интерфейса DRF
+        'rest_framework_simplejwt.authentication.JWTAuthentication', # Урок 6 - задание со *
+    ],
 }
 
 ROOT_URLCONF = 'todo_notes.urls'

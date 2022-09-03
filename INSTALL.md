@@ -23,6 +23,11 @@
 
     pip install djangorestframework-camel-case
 
+- JWT (JSON Web Token) authentication (https://github.com/jazzband/djangorestframework-simplejwt)
+
+
+    pip install djangorestframework-simplejwt
+
 ## Клиент на JavaScript/React
 ### Установка node.js 
 Установить node.js с https://nodejs.org/en/ .
