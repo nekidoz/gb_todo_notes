@@ -55,6 +55,11 @@
 
     npm install react-router-dom@5.2.0
 
+- работа с cookies
+
+
+    npm install universal-cookie
+
 ## Клонирование проекта
 Клонируйте проект из Git 
 
