@@ -28,6 +28,16 @@
 
     pip install djangorestframework-simplejwt
 
+- Mixer - библиотека генерации тестовых данных
+
+
+    pip install mixer
+
+- requests - посылка http-запросов скриптом todo_notes/authtest.py
+
+
+    pip install requests
+
 ## Клиент на JavaScript/React
 ### Установка node.js 
 Установить node.js с https://nodejs.org/en/ .

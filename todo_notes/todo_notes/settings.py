@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django_filters',
     # Required for rest_framework.authentication.TokenAuthentication
     'rest_framework.authtoken',
+    # JWT - приложение для просмотра токенов?
+    #'rest_framework_simplejwt.token_blacklist'
     # ToDo_notes apps
     'users',
     'todo',

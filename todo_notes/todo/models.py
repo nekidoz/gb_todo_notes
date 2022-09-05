@@ -7,7 +7,7 @@ from users.models import User
 class Project(models.Model):
     name = models.CharField(blank=False, null=False, max_length=128)
     repository_url = models.URLField(blank=True, null=True, max_length=1024)
-    member_users = models.ManyToManyField(User)
+    member_users = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.name

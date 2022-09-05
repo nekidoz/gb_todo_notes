@@ -18,6 +18,12 @@
 | нет    | projectowner1 | projown1password | Урок 6 - член группы Project Owners (владельцы проектов имеют права на просмотр модели User и все права на модель Project и ToDo) |
 | нет    | projectowner2 | projown2password | Урок 6 - член группы Project Owners (см. выше)                                                                                    |
 
+### Тесты
+
+Запустите тесты backend'а из папки todo_notes/ командой
+
+    python manage.py test
+
 ## Клиент
 
 Запустите клиент из папки frontend/ командой
@@ -38,8 +44,18 @@
 
 ## Проверка функциональности Урока 6
 
+### Postman
+
 В корне проекта помещен файл экспорта Postman
 
     lesson6.postman_collection.json
 с тестовыми запросами к backend'у для проверки функционирования базовой авторизации, авторизации по токену DRF, 
 а также JWT (задание со *).
+
+### Скрипт
+
+В файле 
+
+    todo_notes/authtest.py 
+
+размещен тестовый код всех видов авторизации.
