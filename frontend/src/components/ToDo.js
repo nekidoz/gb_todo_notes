@@ -7,7 +7,7 @@ const ToDoItem = ({todo}) => {
             <td>{todo.text}</td>
             <td>{todo.dateCreated}</td>
             <td>{todo.dateUpdated}</td>
-            <td>{todo.isActive ? 'Yes' : 'No'}</td>
+            <td>{todo.isActive == null ? "" : todo.isActive ? 'Yes' : 'No'}</td>
             <td>{todo.project}</td>
             <td>{todo.creatorUser}</td>
         </tr>
@@ -27,7 +27,7 @@ const ToDoList = ({todos}) => {
                 <th>Created by user</th>
             </tr></thead>
             <tbody>
-                {todos.map((todo) => <ToDoItem todo={todo} />)}
+                {todos.map((todo) => <ToDoItem key={todo.id.toString()} todo={todo} />)}
             </tbody>
         </table>
     )

@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 
 from pathlib import Path
 
@@ -47,6 +48,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     # JWT - приложение для просмотра токенов?
     #'rest_framework_simplejwt.token_blacklist'
+    # drf-yasg - OpenAPI documentation
+    'drf_yasg',
     # ToDo_notes apps
     'users',
     'todo',
@@ -102,6 +105,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',  # нужен для работы web-интерфейса DRF
         'rest_framework_simplejwt.authentication.JWTAuthentication', # Урок 6 - задание со *
     ],
+    # Versioning (version will be in request.version)
+    #       Version hard-coded in URL, e.g. http://localhost/api/0.2/users/, but passed in namespace parameter
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
 }
 
 ROOT_URLCONF = 'todo_notes.urls'
@@ -109,7 +115,7 @@ ROOT_URLCONF = 'todo_notes.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

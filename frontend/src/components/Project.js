@@ -22,7 +22,7 @@ const ProjectList = ({projects}) => {
                 <th>Members</th>
             </tr></thead>
             <tbody>
-                {projects.map((project) => <ProjectItem project={project} />)}
+                {projects.map((project) => <ProjectItem key={project.id.toString()} project={project} />)}
             </tbody>
         </table>
     )

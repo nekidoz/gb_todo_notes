@@ -1,4 +1,6 @@
 import React from 'react'
+// Необходимо для работы history.push()
+import { withRouter } from 'react-router';
 
 class LoginForm extends React.Component {
 
@@ -17,7 +19,8 @@ class LoginForm extends React.Component {
     handleSubmit(event) {
         // Вызовем callback-метод, который передали сюда в ссылке на эту форму в классе App
         this.props.get_token(this.state.login, this.state.password)
-        event.preventDefault()  // Отменить отправку формы - отправим самостоятельно с помощью Axios
+        event.preventDefault()          // Отменить отправку формы - отправим самостоятельно с помощью Axios
+        this.props.history.push('/')    // Перейти на главную страницу
     }
 
     render() {
@@ -25,11 +28,11 @@ class LoginForm extends React.Component {
             <form onSubmit={(event) => this.handleSubmit(event)}>
                 <input type="text" name="login" placeholder="login" value={this.state.login} onChange={(event) => this.handleChange(event)} />
                 <input type="password" name="password" placeholder="password" value={this.state.password} onChange={(event) => this.handleChange(event)} />
-                <input type="submit" value="Login" />
+                <button type="submit">Login</button>
             </form>
         );
     }
 
 }
 
-export default LoginForm
+export default withRouter(LoginForm)

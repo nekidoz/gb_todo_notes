@@ -117,6 +117,9 @@ class App extends React.Component {
         this.get_token_from_storage()
     }
 
+    // Что нужно сделать после Logout
+    afterLogout
+
     // Inside BrowserRouter:
     // Link's (in Menu.js) navigate between sections without reloading pages
     // Switch gives the chance to add the last Route which is routed to when no matches found above
