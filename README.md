@@ -73,6 +73,12 @@ isStaff (is_staff в модели Django)
 
     http://127.0.0.1:8000/drf/redoc
 
+### Web-интерфейс GraphQL
+
+Доступен web-интерфейс GraphQL по адресу:
+
+    http://127.0.0.1:8000/graphql
+
 ## Клиент
 
 Запустите клиент из папки frontend/ командой
@@ -114,3 +120,54 @@ isStaff (is_staff в модели Django)
     todo_notes/authtest.py 
 
 размещен тестовый код всех видов авторизации.
+
+# Дополнительная информация
+
+## Примеры запросов GraphQL
+
+Ниже даны примеры запросов GraphQL к существующей схеме данных.
+
+    {
+      allUsers {
+        id
+        firstName
+        lastName
+        username
+        email
+      }
+
+      allProjects {
+        id
+        name
+        memberUsers {
+          firstName
+          lastName
+          username
+          email      
+        }
+      }
+
+      allTodos {
+        id
+        text
+        isActive
+        dateCreated
+        dateUpdated
+        creatorUser {
+          firstName
+          lastName
+          username
+          email            
+        }
+        project {
+          id
+          name
+          memberUsers {
+            firstName
+            lastName
+            username
+            email      
+          }      
+        }
+      }
+    }

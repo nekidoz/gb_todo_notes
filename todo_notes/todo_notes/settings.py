@@ -13,6 +13,17 @@ import os
 
 from pathlib import Path
 
+
+# !!!! IMPORTANT! Necessary got graphene_django to work with Django 4
+# GraphQL - as force_text is called force_str in Django 4, but force_text is necessary for graphene_django
+# Solution is based on this post:
+# https://stackoverflow.com/questions/70382084/import-error-force-text-from-django-utils-encoding
+import django
+from django.utils.encoding import force_str
+django.utils.encoding.force_text = force_str
+# !!!! IMPORTANT!
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -50,6 +61,8 @@ INSTALLED_APPS = [
     #'rest_framework_simplejwt.token_blacklist'
     # drf-yasg - OpenAPI documentation
     'drf_yasg',
+    # GraphQL - graphene_django
+    'graphene_django',
     # ToDo_notes apps
     'users',
     'todo',
@@ -185,3 +198,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ToDo_notes - replace default user model
 AUTH_USER_MODEL = 'users.User'
+
+# GraphQL - graphene_django
+GRAPHENE = {
+    "SCHEMA": "todo_notes.schema.schema"       # путь до объекта с описанием схемы
+}

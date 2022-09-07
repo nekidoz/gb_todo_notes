@@ -49,6 +49,11 @@
 
     pip install pyyaml uritemplate
 
+- GraphQL - Graphene-Django
+
+
+    pip install graphene-django
+
 ## Клиент на JavaScript/React
 ### Установка node.js 
 Установить node.js с https://nodejs.org/en/ .

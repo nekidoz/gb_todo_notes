@@ -30,6 +30,8 @@ import rest_framework.schemas
 # OpenAPI - drf_yasg
 import drf_yasg.views
 from drf_yasg import openapi
+# GraphQL
+from graphene_django.views import GraphQLView
 
 from users.views import UserModelViewSet
 from todo.views import ProjectModelViewSet, ToDoModelViewSet
@@ -101,4 +103,7 @@ urlpatterns = [
         template_name='redoc.html',
         extra_context={'schema_url': 'openapi-schema'}
     ), name='redoc'),
+    # GraphQL - graphene_django
+    # graphiql определяет, показывать ли веб-интерфейс для тестирования GraphQL-запросов
+    path('graphql/', GraphQLView.as_view(graphiql=True)),
 ]
