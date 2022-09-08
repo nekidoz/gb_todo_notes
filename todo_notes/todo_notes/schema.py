@@ -63,24 +63,61 @@ class Query(graphene.ObjectType):
 
 # ************************ ИЗМЕНЕНИЯ (мутации) ************************
 
-# class AuthorMutation(graphene.Mutation):
-#     class Arguments:
-#         birthday_year = graphene.Int(required=True)
-#         id = graphene.ID()
-#
-#     author = graphene.Field(AuthorType)
-#
-#     @classmethod
-#     def mutate(cls, root, info, birthday_year, id):
-#         author = Author.objects.get(pk=id)
-#         author.birthday_year = birthday_year
-#         author.save()
-#         return AuthorMutation(author=author)
-#
-#
-# class Mutation(graphene.ObjectType):
-#     update_author = AuthorMutation.Field()
-#
+# Изменение заметки
+class ToDoUpdateMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID(required=True)
+        text = graphene.String(required=False)
+        is_active = graphene.Boolean(required=False)
+
+    todo = graphene.Field(ToDoType)
+
+    @classmethod
+    def mutate(cls, root, info, id, text=None, is_active=None):
+        todo = ToDo.objects.get(pk=id)
+        todo.text = text if text else todo.text
+        todo.is_active = is_active if is_active else todo.is_active
+        todo.save()
+        return cls(todo=todo)
+
+
+# Создание заметки
+class ToDoCreateMutation(graphene.Mutation):
+    class Arguments:
+        project = graphene.ID(required=True)
+        user = graphene.ID(required=True)
+        text = graphene.String(required=True)
+        is_active = graphene.Boolean(required=False)
+
+    todo = graphene.Field(ToDoType)
+
+    @classmethod
+    def mutate(cls, root, info, project, user, text, is_active=None):
+        todo = ToDo.objects.create(project=Project.objects.get(id=project),
+                                   creator_user=User.objects.get(id=user),
+                                   text=text,
+                                   is_active = is_active if is_active else True)
+        return cls(todo=todo)
+
+
+# Удаление автора
+class ToDoDeleteMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID(required=True)
+
+    todo = graphene.List(ToDoType)
+
+    @classmethod
+    def mutate(cls, root, info, id):
+        ToDo.objects.get(pk=id).delete()
+        return cls(todo=ToDo.objects.all())
+
+
+class Mutation(graphene.ObjectType):
+    update_todo = ToDoUpdateMutation.Field()
+    create_todo = ToDoCreateMutation.Field()
+    delete_todo = ToDoDeleteMutation.Field()
+
+
 # Схема данных
-# schema = graphene.Schema(query=Query, mutation=Mutation)
-schema = graphene.Schema(query=Query)
+schema = graphene.Schema(query=Query, mutation=Mutation)

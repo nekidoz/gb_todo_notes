@@ -125,7 +125,9 @@ isStaff (is_staff в модели Django)
 
 ## Примеры запросов GraphQL
 
-Ниже даны примеры запросов GraphQL к существующей схеме данных.
+### Запросы к данным (Query)
+
+Ниже даны примеры запросов GraphQL к данным в существующей схеме данных.
 
     {
       allUsers {
@@ -170,4 +172,81 @@ isStaff (is_staff в модели Django)
           }      
         }
       }
+
+      projectById(id: 1) {
+        name
+        memberUsers {
+          firstName
+          lastName
+        }
+      }
+
+      todosByUserLastName(lastName: "1") {
+        text
+        project {
+          name
+        }
+      }
+
+      todosByUserLastName {
+        text
+        project {
+          name
+        }
+      }
     }
+
+### Запросы на изменение данных (Mutation)
+
+Ниже даны примеры запросов GraphQL на изменение данных в существующей схеме данных.
+
+    mutation create_todo {
+      createTodo(user: 1, project: 1, text: "Давайте уже поработаем над этим") {
+        todo {
+          id
+          text
+          project {
+            name
+          }
+          creatorUser {
+            firstName
+            lastName
+          }
+          isActive
+          dateCreated
+          dateUpdated
+        }
+      }
+    }
+    
+    mutation update_todo {
+      updateTodo(id: 4, text: "Давайте уже поработаем над этим как следует") {
+        todo {
+          id
+          text
+          isActive
+          dateCreated
+          dateUpdated
+        }
+      }
+    }
+    
+    mutation delete_todo {
+      deleteTodo(id: 4) {
+        todo {
+          id
+          text
+          project {
+            name
+          }
+          creatorUser {
+            firstName
+            lastName
+          }
+          isActive
+          dateCreated
+          dateUpdated
+        }
+      }
+    }
+
