@@ -9,15 +9,19 @@ import logo from './logo.svg';
 import './App.css';
 import UserList from './components/User.js'
 import ProjectList from './components/Project.js'
+import ProjectForm from './components/ProjectForm.js'
 import ToDoList from './components/ToDo.js'
+import ToDoForm from './components/ToDoForm.js'
 import ProjectToDoList from './components/ProjectToDo.js'
 import LoginForm from './components/Auth.js'
 import NotFound404 from './components/NotFound404.js'
 import Menu from './components/Menu.js'
 import Footer from './components/Footer.js'
 
-const URL_BASE = 'http://127.0.0.1:8000/api/'
+const URL_BASE = 'http://127.0.0.1:8000/'
+const URL_API = 'api/'
 const get_absolute_url = (url) => `${URL_BASE}${url}`
+const get_absolute_api_url = (url) => `${URL_BASE}${URL_API}${url}`
 
 class App extends React.Component {
 
@@ -41,7 +45,7 @@ class App extends React.Component {
     load_data() {
         const headers = this.get_headers()
 
-        axios.get(get_absolute_url('users/'), {headers})
+        axios.get(get_absolute_api_url('users/'), {headers})
             .then(response => {
                 // The following line does not work with pagination
                 //this.setState({'users': response.data})
@@ -52,14 +56,14 @@ class App extends React.Component {
                 // Чистим данные в случае логаута или других ошибок запроса к данным
                 this.setState({'users': []})
             })
-        axios.get(get_absolute_url('projects/'), {headers})
+        axios.get(get_absolute_api_url('projects/'), {headers})
             .then(response => {
                 this.setState({'projects': response.data.results})
             }).catch(error => {
                 console.log(error)
                 this.setState({'projects': []})
             })
-        axios.get(get_absolute_url('todos/'), {headers})
+        axios.get(get_absolute_api_url('todos/'), {headers})
             .then(response => {
                 this.setState({'todos': response.data.results})
             }).catch(error => {
@@ -69,7 +73,7 @@ class App extends React.Component {
     }
 
     get_token(username, password) {
-        axios.post('http://127.0.0.1:8000/api-token-auth/', {username: username, password: password})
+        axios.post(get_absolute_url('api-token-auth/'), {username: username, password: password})
             .then(response => {
                 this.set_token(response.data['token'], username)
             }).catch(error => alert('Неверный логин или пароль'))
@@ -111,6 +115,51 @@ class App extends React.Component {
         return headers
     }
 
+    // Callback для ProjectItem для удаления проектов
+    deleteProject(id) {
+        const headers = this.get_headers()
+        axios.delete(get_absolute_api_url(`projects/${id}/`), {headers})
+            .then(response => {
+                // Удалить из state без отправки запроса на сервер
+                this.setState({projects: this.state.projects.filter((item) => item.id != id)})
+                // Вариант с чтением данных с сервера - на случай изменений другими пользователями
+//                this.load_data()
+            }).catch(error => console.log(error))
+    }
+
+    // Callback для ToDoItem для удаления заметок
+    deleteToDo(id) {
+        const headers = this.get_headers()
+        axios.delete(get_absolute_api_url(`todos/${id}/`), {headers})
+            .then(response => {
+                this.setState({todos: this.state.todos.filter((item) => item.id != id)})
+            }).catch(error => console.log(error))
+    }
+
+    // Callback для ProjectForm для создания проектов
+    createProject(name, repositoryUrl, memberUsers) {
+        const headers = this.get_headers()
+        const data = {name: name, repositoryUrl: repositoryUrl, memberUsers: memberUsers}
+        axios.post(get_absolute_api_url('projects/'), data, {headers})
+            .then(response => {
+                // распаковываем имеющийся список книг и добавляем к нему новый объект
+                // без отправки запроса на сервер
+                this.setState({projects: [...this.state.projects, response.data]})
+//                this.load_data()        // С чтением данных с сервера - на случай изменений другими пользователями
+            }).catch(error => console.log(error))
+    }
+
+    // Callback для ToDoForm для создания заметок
+    createToDo(project, text, isActive) {
+        const headers = this.get_headers()
+        const creatorUser = this.props.users.filter((user) => user.username === this.props.username)[0].id
+        const data = {project: project, text: text, creatorUser: creatorUser, isActive: isActive}
+        axios.post(get_absolute_api_url('todos/'), data, {headers})
+            .then(response => {
+                this.setState({todo: [...this.state.todo, response.data]})
+            }).catch(error => console.log(error))
+    }
+
     // Вызывается при монтировании компонента на страницу
     componentDidMount() {
         // Загрузка данных с backend'а происходит после загрузки токена данной функцией
@@ -118,7 +167,7 @@ class App extends React.Component {
     }
 
     // Что нужно сделать после Logout
-    afterLogout
+    //afterLogout
 
     // Inside BrowserRouter:
     // Link's (in Menu.js) navigate between sections without reloading pages
@@ -134,17 +183,34 @@ class App extends React.Component {
                     </header>
                     <main role="main" className="flex-shrink-0">
                         <div className="container">
-                                <Switch>
-                                    <Route exact path='/users' component={() => <UserList users={this.state.users} /> }/>
-                                    <Route exact path='/projects' component={() => <ProjectList projects={this.state.projects} /> }/>
-                                    <Route exact path='/todos' component={() => <ToDoList todos={this.state.todos} /> }/>
-                                    <Route exact path='/login' component={() => <LoginForm get_token={(username, password) => this.get_token(username, password)} /> } />
-                                    <Route path="/project/:id">
-                                        <ProjectToDoList todos={this.state.todos} />
-                                    </Route>
-                                    <Redirect from='/' to='/users' />
-                                    <Route component={NotFound404} />
-                                </Switch>
+                            <Switch>
+                                <Route exact path='/users'
+                                       component={() => <UserList users={this.state.users} /> }/>
+                                <Route exact path='/projects'
+                                       component={() => <ProjectList projects={this.state.projects}
+                                                               deleteProject={(id) => this.deleteProject(id)} /> }/>
+                                <Route exact path='/projects/create'
+                                        component={() => <ProjectForm users={this.state.users}
+                                                                   createProject={(name, repositoryUrl, memberUsers) =>
+                                                                   this.createProject(name, repositoryUrl, memberUsers)}
+                                                         /> } />
+                                <Route exact path='/todos'
+                                       component={() => <ToDoList todos={this.state.todos}
+                                                                  deleteTodo={(id) => this.deleteTodo(id)} /> }/>
+                                <Route exact path='/todos/create'
+                                        component={() => <ToDoForm projects={this.state.projects}
+                                                                   createToDo={(project, text, isActive) =>
+                                                                   this.createToDo(project, text, isActive)}
+                                                         /> } />
+                                <Route exact path='/login'
+                                       component={() => <LoginForm get_token={(username, password) =>
+                                                                   this.get_token(username, password)} /> } />
+                                <Route path="/project/:id">
+                                    <ProjectToDoList todos={this.state.todos} />
+                                </Route>
+                                <Redirect from='/' to='/users' />
+                                <Route component={NotFound404} />
+                            </Switch>
                         </div>
                     </main>
                 </BrowserRouter>
