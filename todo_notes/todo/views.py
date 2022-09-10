@@ -38,9 +38,10 @@ class ToDoModelViewSet(ModelViewSet):
     filterset_class = ToDoFilter
     pagination_class = ToDoLimitOffsetPagination
 
-    def destroy(self, request, *args, pk=None, **kwargs):
-        todo = get_object_or_404(ToDo, pk=pk)
-        todo.is_active = False
-        todo.save()
-        serializer = self.get_serializer(todo)
-        return Response(serializer.data)
+    # # Вместо удаления - disable (пока закоментировал)
+    # def destroy(self, request, *args, pk=None, **kwargs):
+    #     todo = get_object_or_404(ToDo, pk=pk)
+    #     todo.is_active = False
+    #     todo.save()
+    #     serializer = self.get_serializer(todo)
+    #     return Response(serializer.data)

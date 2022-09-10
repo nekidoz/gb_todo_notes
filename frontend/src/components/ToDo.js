@@ -1,35 +1,27 @@
 import React from 'react'
+import ToDoItem from './ToDoItem.js'
+import {Link} from 'react-router-dom'
 
-const ToDoItem = ({todo}) => {
+const ToDoList = ({todos, deleteToDo}) => {
     return (
-        <tr>
-            <td>{todo.id}</td>
-            <td>{todo.text}</td>
-            <td>{todo.dateCreated}</td>
-            <td>{todo.dateUpdated}</td>
-            <td>{todo.isActive == null ? "" : todo.isActive ? 'Yes' : 'No'}</td>
-            <td>{todo.project}</td>
-            <td>{todo.creatorUser}</td>
-        </tr>
-    )
-}
-
-const ToDoList = ({todos}) => {
-    return (
-        <table>
-            <thead><tr>
-                <th>ID</th>
-                <th>Text</th>
-                <th>Creation date</th>
-                <th>Update date</th>
-                <th>Active?</th>
-                <th>Project</th>
-                <th>Created by user</th>
-            </tr></thead>
-            <tbody>
-                {todos.map((todo) => <ToDoItem key={todo.id.toString()} todo={todo} />)}
-            </tbody>
-        </table>
+        <div>
+            <table>
+                <thead><tr>
+                    <th>ID</th>
+                    <th>Text</th>
+                    <th>Creation date</th>
+                    <th>Update date</th>
+                    <th>Active?</th>
+                    <th>Project</th>
+                    <th>Created by user</th>
+                    <th></th>
+                </tr></thead>
+                <tbody>
+                    {todos.map((todo) => <ToDoItem key={todo.id.toString()} todo={todo} deleteToDo={deleteToDo} />)}
+                </tbody>
+            </table>
+            <Link to='/todos/create'>Create</Link>
+        </div>
     )
 }
 

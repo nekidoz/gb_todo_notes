@@ -32,8 +32,13 @@ export default function Menu({menuItems, app}) {
                             <Link className="nav-link" to='/login'>Login</Link>}
                     </li>
                 </ul>
-                <form className="form-inline mt-2 mt-md-0">
-                    <input className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
+                <form className="form-inline mt-2 mt-md-0" onSubmit={(event) => {
+                    event.preventDefault()
+                    history.push('/projects')
+                    app.searchProjects(document.getElementById("searchProjects").value)
+                }}>
+                    <input className="form-control mr-sm-2" type="text" id="searchProjects"
+                           placeholder="Search projects" aria-label="Search" />
                     <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
             </div>

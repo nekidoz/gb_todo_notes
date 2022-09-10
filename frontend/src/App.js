@@ -23,6 +23,11 @@ const URL_API = 'api/'
 const get_absolute_url = (url) => `${URL_BASE}${url}`
 const get_absolute_api_url = (url) => `${URL_BASE}${URL_API}${url}`
 
+const display_error = (error) => {
+    console.log(error)
+    alert(error + " : " + error.request.response)
+}
+
 class App extends React.Component {
 
     constructor(props) {
@@ -124,7 +129,7 @@ class App extends React.Component {
                 this.setState({projects: this.state.projects.filter((item) => item.id != id)})
                 // Вариант с чтением данных с сервера - на случай изменений другими пользователями
 //                this.load_data()
-            }).catch(error => console.log(error))
+            }).catch(error => display_error(error))
     }
 
     // Callback для ToDoItem для удаления заметок
@@ -133,31 +138,67 @@ class App extends React.Component {
         axios.delete(get_absolute_api_url(`todos/${id}/`), {headers})
             .then(response => {
                 this.setState({todos: this.state.todos.filter((item) => item.id != id)})
-            }).catch(error => console.log(error))
+            }).catch(error => display_error(error))
     }
 
     // Callback для ProjectForm для создания проектов
-    createProject(name, repositoryUrl, memberUsers) {
+    // id is unused and is present for unification with updateProject
+    createProject(id, name, repositoryUrl, memberUsers) {
         const headers = this.get_headers()
         const data = {name: name, repositoryUrl: repositoryUrl, memberUsers: memberUsers}
         axios.post(get_absolute_api_url('projects/'), data, {headers})
             .then(response => {
-                // распаковываем имеющийся список книг и добавляем к нему новый объект
+                // распаковываем имеющийся список проектов и добавляем к нему новый объект
                 // без отправки запроса на сервер
                 this.setState({projects: [...this.state.projects, response.data]})
 //                this.load_data()        // С чтением данных с сервера - на случай изменений другими пользователями
-            }).catch(error => console.log(error))
+            }).catch(error => display_error(error))
     }
 
     // Callback для ToDoForm для создания заметок
     createToDo(project, text, isActive) {
         const headers = this.get_headers()
-        const creatorUser = this.props.users.filter((user) => user.username === this.props.username)[0].id
+        const creatorUser = this.state.users.filter((user) => user.username === this.state.username)[0].id
         const data = {project: project, text: text, creatorUser: creatorUser, isActive: isActive}
         axios.post(get_absolute_api_url('todos/'), data, {headers})
             .then(response => {
-                this.setState({todo: [...this.state.todo, response.data]})
-            }).catch(error => console.log(error))
+                this.setState({todos: [...this.state.todos, response.data]})
+            }).catch(error => display_error(error))
+    }
+
+    // Callback для ProjectForm для создания проектов
+    getProject(id) {
+        const project = this.state.projects.filter((project) => project.id == id)[0]
+        return project
+    }
+
+    // Callback для ProjectForm для изменения проектов
+    updateProject(id, name, repositoryUrl, memberUsers) {
+        const headers = this.get_headers()
+        const data = {id: id, name: name, repositoryUrl: repositoryUrl, memberUsers: memberUsers}
+        axios.put(get_absolute_api_url(`projects/${id}/`), data, {headers})
+            .then(response => {
+                // заменяем элемент в списке проектов без отправки запроса на сервер
+                this.setState({
+                    projects: this.state.projects.map(project => project.id !== id ? project : response.data)
+                })
+//                this.load_data()        // С чтением данных с сервера - на случай изменений другими пользователями
+            }).catch(error => display_error(error))
+    }
+
+    searchProjects(namePart) {
+        const headers = this.get_headers()
+        axios.get(get_absolute_api_url('projects/'), {headers})
+            .then(response => {
+                if (namePart != null && namePart != "") {
+                    this.setState({'projects': this.state.projects.filter((project) => project.name.includes(namePart))})
+                } else {
+                    this.setState({'projects': response.data.results})
+                }
+            }).catch(error => {
+                console.log(error)
+                this.setState({'projects': []})
+            })
     }
 
     // Вызывается при монтировании компонента на страницу
@@ -191,12 +232,19 @@ class App extends React.Component {
                                                                deleteProject={(id) => this.deleteProject(id)} /> }/>
                                 <Route exact path='/projects/create'
                                         component={() => <ProjectForm users={this.state.users}
-                                                                   createProject={(name, repositoryUrl, memberUsers) =>
-                                                                   this.createProject(name, repositoryUrl, memberUsers)}
+                                                               getProject={(id) => this.getProject(id)}
+                                                               updateProject={(id, name, repositoryUrl, memberUsers) =>
+                                                               this.createProject(id, name, repositoryUrl, memberUsers)}
+                                                         /> } />
+                                <Route exact path='/projects/:id'
+                                        component={() => <ProjectForm users={this.state.users}
+                                                               getProject={(id) => this.getProject(id)}
+                                                               updateProject={(id, name, repositoryUrl, memberUsers) =>
+                                                               this.updateProject(id, name, repositoryUrl, memberUsers)}
                                                          /> } />
                                 <Route exact path='/todos'
                                        component={() => <ToDoList todos={this.state.todos}
-                                                                  deleteTodo={(id) => this.deleteTodo(id)} /> }/>
+                                                                  deleteToDo={(id) => this.deleteToDo(id)} /> }/>
                                 <Route exact path='/todos/create'
                                         component={() => <ToDoForm projects={this.state.projects}
                                                                    createToDo={(project, text, isActive) =>
@@ -205,8 +253,8 @@ class App extends React.Component {
                                 <Route exact path='/login'
                                        component={() => <LoginForm get_token={(username, password) =>
                                                                    this.get_token(username, password)} /> } />
-                                <Route path="/project/:id">
-                                    <ProjectToDoList todos={this.state.todos} />
+                                <Route path="/projects/:id/todos">
+                                    <ProjectToDoList todos={this.state.todos} deleteToDo={(id) => this.deleteToDo(id)}/>
                                 </Route>
                                 <Redirect from='/' to='/users' />
                                 <Route component={NotFound404} />

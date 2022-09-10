@@ -1,4 +1,6 @@
 import React from 'react'
+// Необходимо для работы history.push()
+import { withRouter } from 'react-router';
 
 class ToDoForm extends React.Component {
     constructor(props) {
@@ -15,8 +17,9 @@ class ToDoForm extends React.Component {
     }
 
     handleSubmit(event) {
-        this.props.createProject(this.state.project, this.state.text, this.state.isActive)
+        this.props.createToDo(this.state.project, this.state.text, this.state.isActive)
         event.preventDefault()
+        this.props.history.push('/todos')    // Перейти на страницу проекта
     }
 
     render() {
@@ -25,12 +28,13 @@ class ToDoForm extends React.Component {
                 <div className="form-group">
                     <label htmlFor="project">project</label>
                     <select className="form-control" name="project" onChange={(event) => this.handleChange(event)}>
+                        <option key="0" value={null}>---</option>
                         {this.props.projects.map((project) =>
                             <option key={project.id} value={project.id}>{project.name}</option>)}
                     </select>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="text">name</label>
+                    <label htmlFor="text">text</label>
                     <input type="text" className="form-control" name="text" value={this.state.text}
                             onChange={(event) => this.handleChange(event)} />
                 </div>
@@ -45,4 +49,4 @@ class ToDoForm extends React.Component {
     }
 }
 
-export default ToDoForm
+export default withRouter(ToDoForm)
