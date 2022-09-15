@@ -18,7 +18,10 @@ import NotFound404 from './components/NotFound404.js'
 import Menu from './components/Menu.js'
 import Footer from './components/Footer.js'
 
-const URL_BASE = 'http://127.0.0.1:8000/'
+// For local machine
+//const URL_BASE = 'http://127.0.0.1:8000/'
+// For Docker deployment
+const URL_BASE = 'http://0.0.0.0:8000/'
 const URL_API = 'api/'
 const get_absolute_url = (url) => `${URL_BASE}${url}`
 const get_absolute_api_url = (url) => `${URL_BASE}${URL_API}${url}`

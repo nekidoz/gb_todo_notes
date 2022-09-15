@@ -1,0 +1,56 @@
+version: '3.1'
+services:
+  db:
+    env_file:
+      - .env
+    image: postgres:14.5
+    privileged: true
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Postgres superuser name not specified}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?Postgres superuser password not specified}
+      POSTGRES_DB: ${POSTGRES_DATABASE?Postgress database name not specified}
+  adminer:
+    image: adminer:4.8.1-standalone
+    restart: always
+    ports:
+      - 8081:8080
+    depends_on:
+      - db
+  backend:
+    build:
+      context: todo_notes
+    ports:
+      - 8080:8080
+#    # Если хотим, чтобы контейнер был доступен только для других контейнеров данной сборки и не виден извне Docker, вместо ports пишем:
+#    expose:
+#      - '8080'
+    command: bash -c "
+      echo 'Waiting for Postgres to start'
+      && ./wait-for-postgres.sh ${POSTGRES_HOST:?Postgres host not specified} ${POSTGRES_DATABASE} ${POSTGRES_USER} ${POSTGRES_PASSWORD}
+      && echo 'Migrating Django databases'
+      && python manage.py migrate
+      && echo 'Creating Django superuser account'
+      && python manage.py create_superuser ${DJANGO_USER?Django username not specified} ${DJANGO_PASSWORD?Django password not specified} ${DJANGO_EMAIL?Django email not specified}
+      && echo 'Starting Django on Gunicorn server'
+      && gunicorn todo_notes.wsgi -b 0.0.0.0:8080
+      "
+#      # This is to start Django test server instead of Gunicorn
+#      && echo 'Starting Django server'
+#      && python manage.py runserver 0.0.0.0:8080
+    depends_on:
+      - db
+  nginx:
+    build: nginx
+    ports:
+      - 8000:8000
+    depends_on:
+      - backend
+  frontend:
+    build: frontend
+    ports:
+      - 80:80
+    depends_on:
+      - nginx
