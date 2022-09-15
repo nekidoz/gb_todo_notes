@@ -54,6 +54,11 @@
 
     pip install graphene-django
 
+- PostgreSQL - for Docker deployment
+
+
+    pip install psycopg2-binary
+
 ## Клиент на JavaScript/React
 ### Установка node.js 
 Установить node.js с https://nodejs.org/en/ .
@@ -89,3 +94,8 @@
 ## Клонирование проекта
 Клонируйте проект из Git 
 
+# Размещение проекта в Docker
+
+Проект подготовлен для размещения в Docker и проверен на локальной инсталляции Docker.
+Конфигурационные файлы и изменения в проекте, необходимые для размещения его в Docker,
+описаны в файле **_DOCKER.md_**.

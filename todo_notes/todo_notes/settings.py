@@ -37,7 +37,10 @@ SECRET_KEY = 'django-insecure-r9jl9p=l-7vb@v@&blcf7q=xr95p4jn9z2fr+q5^6z=wudax&a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "0.0.0.0",
+]
 
 
 # Application definition
@@ -83,7 +86,10 @@ MIDDLEWARE = [
 
 # CORS: Library - React server address
 CORS_ALLOWED_ORIGINS = [
+    # Local computer
     "http://localhost:3000",
+    # Docker deployment
+    "http://0.0.0.0",
 ]
 
 # DRF CamelCase (djangorestframework-camel-case): Library
@@ -148,10 +154,21 @@ WSGI_APPLICATION = 'todo_notes.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
+    # # Local installation
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # },
+    # Docker installation
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'todo_notes',
+        'USER': 'superuser',
+        'PASSWORD': 'superpassword',
+        # DB hostname in docker-compose.yml
+        'HOST': 'db',
+        'PORT': '5432',
+    },
 }
 
 
